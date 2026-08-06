@@ -85,7 +85,10 @@ export default async function Footer() {
       ...social,
       url: resolveLink(social.link),
     }));
-
+    
+    console.log(
+  footerData?.story?.content?.body
+);
   return (
     <footer className="relative mt-auto overflow-hidden border-t border-white/10 bg-gradient-to-b from-[#1A0B3F] via-[#240F54] to-[#12082E] text-white">
       <div className="pointer-events-none absolute -left-24 top-10 h-80 w-80 rounded-full bg-[#FF0073]/20 blur-[120px]" />
