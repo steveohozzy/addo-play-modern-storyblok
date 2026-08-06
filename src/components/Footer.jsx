@@ -1,11 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
+import { headers } from "next/headers";
 
-import { getNavigation } from "@/lib/getNavigation";
-import {
-  getStoryblokApi,
-  resolveLink,
-} from "@/lib/storyblok";
+import { getStoryblokApi, resolveLink } from "@/lib/storyblok";
 
 import InstagramIcon from "./icons/InstagramIcon";
 import FacebookIcon from "./icons/FacebookIcon";
@@ -13,24 +10,49 @@ import YoutubeIcon from "./icons/YouTubeIcon";
 import LinkedInIcon from "./icons/LinkedInIcon";
 
 export default async function Footer() {
-  const menuItems =
-    await getNavigation();
+  const storyblokApi = getStoryblokApi();
 
-  const storyblokApi =
-    getStoryblokApi();
-
-  const { data } =
-    await storyblokApi.get(
-      "cdn/stories/globals/footer",
-      {
-        version: "draft",
-      }
-    );
+  const [{ data: footerData }, { data: headerData }] = await Promise.all([
+    storyblokApi.get("cdn/stories/globals/footer", {
+      version: "draft",
+    }),
+    storyblokApi.get("cdn/stories/globals/header", {
+      version: "draft",
+    }),
+  ]);
 
   const footer =
-  data?.story?.content?.body?.find(
-    (blok) => blok.component === "footer"
-  ) || {};
+    footerData?.story?.content?.body?.find(
+      (blok) => blok.component === "footer"
+    ) || {};
+
+  const header =
+    headerData?.story?.content?.body?.find(
+      (blok) => blok.component === "HeaderSettings"
+    ) || {};
+
+  const menuItems = header.Navigation || [];
+
+  const pathname =
+    (await headers()).get("x-pathname") || "/";
+
+  function getNavHref(item) {
+    const pageLink = resolveLink(item.Link);
+
+    if (item.HomepageAnchor) {
+      if (pathname === "/") {
+        return `#${item.HomepageAnchor}`;
+      }
+
+      if (pageLink && pageLink !== "/") {
+        return `${pageLink}#${item.HomepageAnchor}`;
+      }
+
+      return `/#${item.HomepageAnchor}`;
+    }
+
+    return pageLink || "/";
+  }
 
   const socials = [
     {
@@ -65,219 +87,129 @@ export default async function Footer() {
     }));
 
   return (
-    <footer className="mt-auto overflow-hidden border-t border-border bg-muted">
+    <footer className="relative mt-auto overflow-hidden border-t border-white/10 bg-gradient-to-b from-[#1A0B3F] via-[#240F54] to-[#12082E] text-white">
+      <div className="pointer-events-none absolute -left-24 top-10 h-80 w-80 rounded-full bg-[#FF0073]/20 blur-[120px]" />
+      <div className="pointer-events-none absolute right-0 bottom-0 h-96 w-96 rounded-full bg-[#FF7300]/15 blur-[140px]" />
+      <div className="pointer-events-none absolute right-20 top-16 h-20 w-20 rotate-12 rounded-[1.5rem] bg-[#FFB800]/70" />
 
-      {/* Top */}
-      <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 md:grid-cols-3 md:px-8">
-
-        {/* Brand */}
+      <div className="relative z-10 mx-auto grid max-w-7xl gap-12 px-4 py-16 md:grid-cols-3 md:px-8">
         <div>
           <Image
             src={
               footer.logo?.filename ||
               "https://www.addoplay.com/wp-content/uploads/2025/04/AP_Licensing.png"
             }
-            alt="ADDO"
-            width={80}
+            alt="ADDO Play"
+            width={180}
             height={80}
             className="h-auto"
           />
 
           {footer.brandText && (
-            <p className="mt-6 max-w-sm leading-relaxed text-muted-foreground">
+            <p className="mt-6 max-w-sm leading-relaxed text-white/70">
               {footer.brandText}
             </p>
           )}
 
-          {/* Socials */}
           {socials.length > 0 && (
             <div className="mt-8 flex gap-3">
-
-              {socials.map(
-                (social) => (
-                  <Link
-                    key={
-                      social.name
-                    }
-                    href={
-                      social.url
-                    }
-                    target="_blank"
-                    className="
-                      flex
-                      size-12
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-white
-                      shadow-sm
-                      transition-all
-                      hover:-translate-y-1
-                      hover:shadow-lg
-                    "
-                  >
-                    {
-                      social.icon
-                    }
-                  </Link>
-                )
-              )}
-
+              {socials.map((social) => (
+                <Link
+                  key={social.name}
+                  href={social.url}
+                  target="_blank"
+                  className="group flex size-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-[#FF0073]/50 hover:bg-white/15 hover:shadow-[0_10px_30px_rgba(255,0,115,0.35)]"
+                >
+                  {social.icon}
+                </Link>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Navigation */}
         <div>
-          <h3 className="mb-6 font-heading text-xl text-primary">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-[#FFB800]">
             Explore
-          </h3>
+          </div>
 
-          <div className="grid gap-3">
-
-            {menuItems.map(
-              (item) => (
-                <Link
-                  key={
-                    item.id
-                  }
-                  href={`/${item.slug}`}
-                  className="
-                    group
-                    flex
-                    items-center
-                    gap-2
-                    text-muted-foreground
-                    transition-colors
-                    hover:text-primary
-                  "
-                >
-                  <span className="transition-transform group-hover:translate-x-1">
-                    →
-                  </span>
-
-                  {item.name}
-                </Link>
-              )
-            )}
-
+          <div className="mt-6 grid gap-3">
+            {menuItems.map((item) => (
+              <Link
+                key={item._uid}
+                href={getNavHref(item)}
+                target={item.OpenInNewTab ? "_blank" : undefined}
+                className="group flex items-center gap-3 rounded-xl px-3 py-2 text-white/75 transition-all duration-300 hover:bg-white/10 hover:text-white"
+              >
+                <span className="text-[#FFB800] transition-transform duration-300 group-hover:translate-x-1">
+                  →
+                </span>
+                <span className="font-medium">{item.Label}</span>
+              </Link>
+            ))}
           </div>
         </div>
 
-        {/* CTA */}
         <div>
-
-          <div
-            className="
-              rounded-[2rem]
-              bg-primary
-              p-8
-              text-primary-foreground
-            "
-          >
+          <div className="rounded-[2rem] border border-white/10 bg-white/10 p-8 backdrop-blur-xl">
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#FFB800] px-3 py-1 text-xs font-black uppercase tracking-wide text-[#34156F]">
+              {footer.ctaTitle ? "Join in" : "Play club"}
+            </div>
 
             {footer.ctaTitle && (
-              <h3 className="font-heading text-2xl">
+              <h3 className="mt-4 font-heading text-3xl font-black text-white">
                 {footer.ctaTitle}
               </h3>
             )}
 
             {footer.ctaText && (
-              <p className="mt-3 opacity-90">
+              <p className="mt-4 leading-relaxed text-white/75">
                 {footer.ctaText}
               </p>
             )}
 
             {footer.ctaButtonText && (
               <Link
-                href={resolveLink(
-                  footer.ctaButtonLink
-                )}
-                className="
-                  mt-6
-                  inline-flex
-                  rounded-full
-                  bg-white
-                  px-6
-                  py-3
-                  font-semibold
-                  text-primary
-                  transition-transform
-                  hover:-translate-y-1
-                "
+                href={resolveLink(footer.ctaButtonLink)}
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF0073] to-[#FF7300] px-6 py-3 text-sm font-black text-white shadow-lg shadow-pink-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-pink-500/50"
               >
                 {footer.ctaButtonText}
-                {" "}→
+                <span>→</span>
               </Link>
             )}
-
           </div>
-
         </div>
-
       </div>
 
-      {/* Bottom */}
-      <div className="border-t border-border">
-
-        <div
-          className="
-            mx-auto
-            flex
-            max-w-7xl
-            flex-col
-            items-center
-            justify-between
-            gap-4
-            px-4
-            py-6
-            text-sm
-            text-muted-foreground
-            md:flex-row
-            md:px-8
-          "
-        >
-
+      <div className="border-t border-white/10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 text-sm text-white/60 md:flex-row md:px-8">
           <p>
-            ©{" "}
-            {new Date().getFullYear()}
-            {" "}
-            ADDO. All rights
-            reserved.
+            © {new Date().getFullYear()} ADDO Play. Made for colourful imaginations.
           </p>
 
           <div className="flex gap-6">
-
             <Link
-              href={resolveLink(
-                footer.privacyLink
-              )}
+              href={resolveLink(footer.privacyLink)}
+              className="transition-colors hover:text-[#FFB800]"
             >
               Privacy
             </Link>
 
             <Link
-              href={resolveLink(
-                footer.termsLink
-              )}
+              href={resolveLink(footer.termsLink)}
+              className="transition-colors hover:text-[#FFB800]"
             >
               Terms
             </Link>
 
             <Link
-              href={resolveLink(
-                footer.cookiesLink
-              )}
+              href={resolveLink(footer.cookiesLink)}
+              className="transition-colors hover:text-[#FFB800]"
             >
               Cookies
             </Link>
-
           </div>
-
         </div>
-
       </div>
-
     </footer>
   );
 }

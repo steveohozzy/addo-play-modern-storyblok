@@ -1,7 +1,9 @@
-import StoryblokInitializer from "@/components/StorybkokInitializer";
-
 import { Fredoka, Quicksand } from 'next/font/google';
 import "./globals.css";
+
+import {
+  getStoryblokApi,
+} from "@/lib/storyblok";
 
 import Header from "@/components/Header";
 import { getNavigation } from "@/lib/getNavigation";
@@ -23,7 +25,21 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const menuItems = await getNavigation();
+
+  const storyblokApi = getStoryblokApi();
+
+  const { data } = await storyblokApi.get(
+    "cdn/stories/globals/header",
+    {
+      version: "draft",
+    }
+  );
+
+
+  const header =
+    data?.story?.content?.body?.find(
+      (blok) => blok.component === "HeaderSettings"
+    ) || {};
 
   return (
     <html
@@ -31,12 +47,10 @@ export default async function RootLayout({ children }) {
       className={`${fredoka.variable} ${quicksand.variable}`}
     >
       <body className="min-h-screen flex flex-col">
-        <Header menuItems={menuItems} />
+        <Header blok={header} />
 
         <main className="flex-1">
-          <StoryblokInitializer>
           {children}
-          </StoryblokInitializer>
         </main>
 
         <Footer />

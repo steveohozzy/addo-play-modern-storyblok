@@ -1,124 +1,124 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { storyblokEditable } from "@storyblok/react";
 
-export default function Blog({
-  blok,
-}) {
-  const panels =
-    blok.BlogPosts ?? [];
+export default function Blog({ blok }) {
+  const panels = blok.BlogPosts ?? [];
 
   return (
     <section
-      {...storyblokEditable(blok)}
-      id="blog"
-      className="bg-muted/60"
-    >
-      <div className={`mx-auto max-w-7xl px-4 ${blok.Title ? "py-20" : "py-10"} md:px-8 ${blok.Title ? "lg:py-28" : "lg:pb-12 lg:pt-4"}`}>
-      {blok.Title && (
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-xl">
-          <span className="text-sm font-semibold uppercase tracking-widest text-primary">
-            {blok.Tagline}
-          </span>
+  {...storyblokEditable(blok)}
+  id="blog"
+  className="relative overflow-hidden bg-gradient-to-b from-[#F3ECFF] via-[#EEF7FF] to-[#F8FBFF] py-24 lg:py-32"
+>
+  <div className="pointer-events-none absolute -left-20 top-20 h-80 w-80 rounded-full bg-[#7C3AED]/12 blur-[120px]" />
+  <div className="pointer-events-none absolute right-0 bottom-0 h-96 w-96 rounded-full bg-[#0B9FEE]/12 blur-[140px]" />
+  <div className="pointer-events-none absolute top-10 left-1/2 h-24 w-24 -translate-x-1/2 rounded-full bg-[#FF0073]/8 blur-3xl" />
 
-          <h2 className="mt-3 text-balance font-heading text-4xl font-semibold leading-tight text-foreground md:text-5xl">
-            {blok.Title}
-          </h2>
-        </div>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 md:px-8">
+        {blok.Title && (
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl">
+              {blok.Tagline && (
+                <span className="inline-flex items-center gap-2 rounded-full border border-[#0B9FEE]/20 bg-[#EAF8FF] px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-[#0B9FEE]">
+                  <span className="h-2 w-2 rounded-full bg-[#FF0073]" />
+                  {blok.Tagline}
+                </span>
+              )}
 
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
-        >
-          Read the journal
+              <h2 className="mt-5 text-balance font-heading text-4xl font-black leading-tight text-[#24124D] md:text-5xl lg:text-6xl">
+                {blok.Title}{" "}
+                <span className="bg-gradient-to-r from-[#FF0073] via-[#FF7300] to-[#0B9FEE] bg-clip-text text-transparent">
+                  adventures
+                </span>
+              </h2>
+            </div>
 
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M5 12h14"></path>
-            <path d="m12 5 7 7-7 7"></path>
-          </svg>
-        </Link>
-      </div>
-      )}
-
-      <div className="mt-12 grid gap-6 md:grid-cols-3">
-        {panels.map((p) => (
-          <article
-            key={p._uid}
-            className="group overflow-hidden rounded-[2rem] border border-border bg-card transition-shadow hover:shadow-xl"
-          >
             <Link
-              href={`/blog/${p.Slug}`}
+              href="/blog"
+              className="group inline-flex items-center gap-2 rounded-full border border-[#24124D]/10 bg-white px-5 py-3 text-sm font-black text-[#24124D] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#FF0073]/20 hover:shadow-lg"
             >
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <Image
-                  src={
-                    p.Image
-                      ?.filename ||
-                    "/images/heritage.png"
-                  }
-                  alt={
-                    p.Title ||
-                    "Blog image"
-                  }
-                  width={600}
-                  height={450}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-
-                {p.Tag && (
-                  <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-xs font-semibold text-foreground backdrop-blur">
-                    {p.Tag}
-                  </span>
-                )}
-              </div>
-
-              <div className="flex flex-col p-6">
-                <div>
-                  <h3 className="font-heading text-xl font-semibold text-foreground">
-                    {p.Title}
-                  </h3>
-                </div>
-
-                <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
-                  <span className="text-sm text-muted-foreground">
-                    {p.ReadLength} read
-                  </span>
-
-                  <span className="flex size-9 items-center justify-center rounded-full bg-muted text-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 12h14"></path>
-                      <path d="m12 5 7 7-7 7"></path>
-                    </svg>
-                  </span>
-                </div>
-              </div>
+              Read all stories
+              <svg
+                className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
             </Link>
-          </article>
-        ))}
-      </div>
+          </div>
+        )}
+
+        <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {panels.map((p, index) => {
+            const badgeColours = [
+              "bg-[#FF0073] text-white",
+              "bg-[#FFB800] text-[#24124D]",
+              "bg-[#0B9FEE] text-white",
+              "bg-[#7C3AED] text-white",
+            ];
+
+            return (
+              <article
+                key={p._uid}
+                className="group relative overflow-hidden rounded-[2rem] border border-white/60 bg-white/80 shadow-sm backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(91,33,182,0.18)]"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-[#FF0073]/0 via-transparent to-[#0B9FEE]/0 transition-all duration-500 group-hover:from-[#FF0073]/5 group-hover:to-[#0B9FEE]/5" />
+
+                <Link href={`/blog/${p.Slug}`} className="relative z-10 block">
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <Image
+                      src={p.Image?.filename || "/images/heritage.png"}
+                      alt={p.Title || "Blog image"}
+                      fill
+                      sizes="(max-width:768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+
+                    {p.Tag && (
+                      <span
+                        className={`absolute left-5 top-5 rounded-full px-4 py-2 text-xs font-black uppercase tracking-wide backdrop-blur ${badgeColours[index % badgeColours.length]}`}
+                      >
+                        {p.Tag}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="p-7">
+                    <h3 className="font-heading text-2xl font-black leading-tight text-[#24124D]">
+                      {p.Title}
+                    </h3>
+
+                    <div className="mt-8 flex items-center justify-between border-t border-[#24124D]/10 pt-5">
+                      <span className="text-sm font-semibold text-[#5B6884]">
+                        {p.ReadLength || "5 min"} read
+                      </span>
+
+                      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-r from-[#FF0073] to-[#FF7300] text-white shadow-lg transition-all duration-300 group-hover:scale-110">
+                        <svg
+                          className="h-5 w-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path d="M5 12h14" />
+                          <path d="m12 5 7 7-7 7" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </article>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
