@@ -58,7 +58,7 @@ export default function Blog({ blok }) {
         <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {panels.map((p, index) => {
             const badgeColours = [
-              "bg-[#FF0073] text-white",
+              "bg-[#DD004B] text-white",
               "bg-[#FFB800] text-[#24124D]",
               "bg-[#0B9FEE] text-white",
               "bg-[#7C3AED] text-white",
