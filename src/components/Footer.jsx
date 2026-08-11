@@ -124,6 +124,7 @@ export default async function Footer() {
                   className="group flex size-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-[#FF0073]/50 hover:bg-white/15 hover:shadow-[0_10px_30px_rgba(255,0,115,0.35)]"
                 >
                   {social.icon}
+                  <span className="sr-only">{social.name}</span>
                 </Link>
               ))}
             </div>

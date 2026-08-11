@@ -22,7 +22,7 @@ export default function Blog({ blok }) {
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
               {blok.Tagline && (
-                <span className="inline-flex items-center gap-2 rounded-full border border-[#0B9FEE]/20 bg-[#EAF8FF] px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-[#0B9FEE]">
+                <span className="inline-flex items-center gap-2 rounded-full border border-[#0B9FEE]/20 bg-[#EAF8FF] px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-[#24124D]">
                   <span className="h-2 w-2 rounded-full bg-[#FF0073]" />
                   {blok.Tagline}
                 </span>
