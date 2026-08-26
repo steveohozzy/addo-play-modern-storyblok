@@ -81,9 +81,9 @@ export default function StorySection({ blok }) {
             )}
 
             <h2 className="mt-5 text-balance font-heading text-4xl font-black leading-tight text-[#24124D] md:text-5xl lg:text-6xl">
-              {blok.Title}{' '}
+              {blok.Title.split(" ").slice(0, -1).join(" ")}{" "}
               <span className="bg-gradient-to-r from-[#FF0073] via-[#FF7300] to-[#0B9FEE] bg-clip-text text-transparent">
-                together
+                {blok.Title.split(" ").slice(-1)}
               </span>
             </h2>
 
